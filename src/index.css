@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600&display=swap');
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --controller-bg: #0A0B0E;
+  --panel-bg: #111319;
+  --button-bg: #1C1E26;
+  --button-hover: #252833;
+  --accent-blue: #3b82f6;
+  --border-color: #1f2937; /* gray-800 */
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--controller-bg)] text-gray-300 font-sans overflow-hidden select-none touch-none;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+@layer components {
+  .geometric-panel {
+    @apply bg-[var(--panel-bg)] border border-[var(--border-color)] rounded-2xl shadow-2xl;
+  }
+
+  .hard-rail {
+    @apply bg-[#0F1115] border-t border-[var(--border-color)];
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  }
+}
+
+/* Hide scrollbars during gameplay */
+::-webkit-scrollbar {
+  display: none;
+}
