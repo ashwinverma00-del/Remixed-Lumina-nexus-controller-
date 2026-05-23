@@ -477,7 +477,7 @@ function ControllerApp() {
         {/* Left Section: D-Pad & Left Stick inside a Customizable Gamepad Wing Panel */}
         <div className="col-span-4 h-full flex flex-col justify-center items-center">
           <motion.div 
-            className="w-full max-w-[280px] h-full max-h-[92%] flex flex-col justify-around items-center py-4 px-3 rounded-[32px] bg-gradient-to-b from-[#111319]/80 to-[#0c0d12]/90 backdrop-blur-md shadow-2xl relative"
+            className="w-full max-w-[280px] h-full max-h-[92%] flex flex-col justify-around items-center py-4 px-3 rounded-[32px] bg-gradient-to-b from-[#111319]/80 to-[#0c0d12]/90 backdrop-blur-md shadow-2xl relative overflow-hidden"
             style={{
               borderWidth: `${settings.gamepadBorderSize ?? 2}px`,
               borderStyle: settings.gamepadBorderStyle === 'glow_pulse' ? 'solid' : (settings.gamepadBorderStyle === 'none' ? 'none' : settings.gamepadBorderStyle || 'solid'),
@@ -488,36 +488,56 @@ function ControllerApp() {
             animate={settings.gamepadBorderStyle === 'glow_pulse' ? {
               boxShadow: [
                 `0 0 8px ${activeColor}30, inset 0 0 10px ${activeColor}10`,
-                `0 0 20px ${activeColor}70, inset 0 0 15px ${activeColor}20`,
+                `0 0 25px ${activeColor}80, inset 0 0 15px ${activeColor}20`,
                 `0 0 8px ${activeColor}30, inset 0 0 10px ${activeColor}10`
               ],
               borderColor: [activeColor, `${activeColor}80`, activeColor]
             } : {
-              boxShadow: settings.gamepadBorderStyle === 'none' ? 'none' : `0 10px 25px rgba(0,0,0,0.4)`,
+              boxShadow: settings.gamepadBorderStyle === 'none' ? 'none' : `0 10px 30px rgba(0,0,0,0.5)`,
               borderColor: settings.gamepadBorderStyle === 'none' ? 'transparent' : activeColor
             }}
             transition={{ repeat: Infinity, duration: 2.0, ease: 'easeInOut' }}
           >
-            {/* Shoulder Buttons L - contained safe within layout */}
-            <div className="flex gap-2 justify-center w-full" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <ShoulderButton label="L2 Trigger" id="L2" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['L2']} isTrigger activeColor={activeColor} />
-              <ShoulderButton label="L1 Bumper" id="L1" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['L1']} activeColor={activeColor} />
-            </div>
+            {/* Ambient LED Pipeline Contour - flowing edge glow */}
+            <div 
+              className="absolute inset-[1px] rounded-[31px] pointer-events-none border border-transparent opacity-80 z-0" 
+              style={{
+                borderColor: `${activeColor}22`,
+                boxShadow: `inset 0 0 20px ${activeColor}1c`,
+              }}
+            />
+            {/* Real mechanical physical LED light bar on the edge */}
+            <div 
+              className="absolute top-10 bottom-10 left-0 w-[4px] rounded-r-full z-0 transition-all duration-300" 
+              style={{ 
+                backgroundColor: activeColor,
+                boxShadow: `0 0 20px ${activeColor}, 0 0 35px ${activeColor}aa`
+              }} 
+            />
 
-            {/* D-Pad */}
-            <div className="flex items-center justify-center" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <DPad onInput={handleButtonPress} onRelease={handleButtonRelease} activeButtons={state.buttons} activeColor={activeColor} />
-            </div>
+            {/* Content wrapped correctly in relative layout block */}
+            <div className="relative z-10 w-full h-full flex flex-col justify-around items-center">
+              {/* Shoulder Buttons L - contained safe within layout */}
+              <div className="flex gap-2 justify-center w-full" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <ShoulderButton label="L2 Trigger" id="L2" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['L2']} isTrigger activeColor={activeColor} />
+                <ShoulderButton label="L1 Bumper" id="L1" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['L1']} activeColor={activeColor} />
+              </div>
 
-            {/* Left Joystick */}
-            <div className="flex items-center justify-center" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <Joystick 
-                id="left" 
-                label="LS"
-                calibration={settings.calibration.left}
-                activeColor={activeColor}
-                onChange={(x, y) => setState(p => ({ ...p, axes: { ...p.axes, left: { x, y } } }))} 
-              />
+              {/* D-Pad */}
+              <div className="flex items-center justify-center" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <DPad onInput={handleButtonPress} onRelease={handleButtonRelease} activeButtons={state.buttons} activeColor={activeColor} />
+              </div>
+
+              {/* Left Joystick */}
+              <div className="flex items-center justify-center" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <Joystick 
+                  id="left" 
+                  label="LS"
+                  calibration={settings.calibration.left}
+                  activeColor={activeColor}
+                  onChange={(x, y) => setState(p => ({ ...p, axes: { ...p.axes, left: { x, y } } }))} 
+                />
+              </div>
             </div>
           </motion.div>
         </div>
@@ -623,7 +643,7 @@ function ControllerApp() {
         {/* Right Section: ABXY & Right Stick inside a Customizable Gamepad Wing Panel */}
         <div className="col-span-4 h-full flex flex-col justify-center items-center">
           <motion.div 
-            className="w-full max-w-[280px] h-full max-h-[92%] flex flex-col justify-around items-center py-4 px-3 rounded-[32px] bg-gradient-to-b from-[#111319]/80 to-[#0c0d12]/90 backdrop-blur-md shadow-2xl relative"
+            className="w-full max-w-[280px] h-full max-h-[92%] flex flex-col justify-around items-center py-4 px-3 rounded-[32px] bg-gradient-to-b from-[#111319]/80 to-[#0c0d12]/90 backdrop-blur-md shadow-2xl relative overflow-hidden"
             style={{
               borderWidth: `${settings.gamepadBorderSize ?? 2}px`,
               borderStyle: settings.gamepadBorderStyle === 'glow_pulse' ? 'solid' : (settings.gamepadBorderStyle === 'none' ? 'none' : settings.gamepadBorderStyle || 'solid'),
@@ -634,36 +654,56 @@ function ControllerApp() {
             animate={settings.gamepadBorderStyle === 'glow_pulse' ? {
               boxShadow: [
                 `0 0 8px ${activeColor}30, inset 0 0 10px ${activeColor}10`,
-                `0 0 20px ${activeColor}70, inset 0 0 15px ${activeColor}20`,
+                `0 0 25px ${activeColor}80, inset 0 0 15px ${activeColor}20`,
                 `0 0 8px ${activeColor}30, inset 0 0 10px ${activeColor}10`
               ],
               borderColor: [activeColor, `${activeColor}80`, activeColor]
             } : {
-              boxShadow: settings.gamepadBorderStyle === 'none' ? 'none' : `0 10px 25px rgba(0,0,0,0.4)`,
+              boxShadow: settings.gamepadBorderStyle === 'none' ? 'none' : `0 10px 30px rgba(0,0,0,0.5)`,
               borderColor: settings.gamepadBorderStyle === 'none' ? 'transparent' : activeColor
             }}
             transition={{ repeat: Infinity, duration: 2.0, ease: 'easeInOut' }}
           >
-            {/* Shoulder Buttons R - contained safe within layout */}
-            <div className="flex flex-row-reverse gap-2 justify-center w-full" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <ShoulderButton label="R2 Trigger" id="R2" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['R2']} isTrigger activeColor={activeColor} />
-              <ShoulderButton label="R1 Bumper" id="R1" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['R1']} activeColor={activeColor} />
-            </div>
+            {/* Ambient LED Pipeline Contour - flowing edge glow */}
+            <div 
+              className="absolute inset-[1px] rounded-[31px] pointer-events-none border border-transparent opacity-80 z-0" 
+              style={{
+                borderColor: `${activeColor}22`,
+                boxShadow: `inset 0 0 20px ${activeColor}1c`,
+              }}
+            />
+            {/* Real mechanical physical LED light bar on the edge */}
+            <div 
+              className="absolute top-10 bottom-10 right-0 w-[4px] rounded-l-full z-0 transition-all duration-300" 
+              style={{ 
+                backgroundColor: activeColor,
+                boxShadow: `0 0 20px ${activeColor}, 0 0 35px ${activeColor}aa`
+              }} 
+            />
 
-            {/* Action Buttons Pad */}
-            <div className="flex items-center justify-center p-1" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <ActionPad onInput={handleButtonPress} onRelease={handleButtonRelease} activeButtons={state.buttons} activeColor={activeColor} />
-            </div>
+            {/* Content wrapped correctly in relative layout block */}
+            <div className="relative z-10 w-full h-full flex flex-col justify-around items-center">
+              {/* Shoulder Buttons R - contained safe within layout */}
+              <div className="flex flex-row-reverse gap-2 justify-center w-full" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <ShoulderButton label="R2 Trigger" id="R2" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['R2']} isTrigger activeColor={activeColor} />
+                <ShoulderButton label="R1 Bumper" id="R1" onPress={handleButtonPress} onRelease={handleButtonRelease} pressed={!!state.buttons['R1']} activeColor={activeColor} />
+              </div>
 
-            {/* Right Joystick */}
-            <div className="flex items-center justify-center lg:mt-1" style={{ transform: `scale(${settings.buttonScale})` }}>
-              <Joystick 
-                id="right" 
-                label="RS"
-                calibration={settings.calibration.right}
-                activeColor={activeColor}
-                onChange={(x, y) => setState(p => ({ ...p, axes: { ...p.axes, right: { x, y } } }))} 
-              />
+              {/* Action Buttons Pad */}
+              <div className="flex items-center justify-center p-1" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <ActionPad onInput={handleButtonPress} onRelease={handleButtonRelease} activeButtons={state.buttons} activeColor={activeColor} />
+              </div>
+
+              {/* Right Joystick */}
+              <div className="flex items-center justify-center lg:mt-1" style={{ transform: `scale(${settings.buttonScale})` }}>
+                <Joystick 
+                  id="right" 
+                  label="RS"
+                  calibration={settings.calibration.right}
+                  activeColor={activeColor}
+                  onChange={(x, y) => setState(p => ({ ...p, axes: { ...p.axes, right: { x, y } } }))} 
+                />
+              </div>
             </div>
           </motion.div>
         </div>
@@ -2026,25 +2066,85 @@ function Joystick({ id, label, onChange, calibration, activeColor }: { id: strin
     }
   };
 
+  // Calculate dynamic responsive tilt flare coordinates
+  const tiltX = position.x;
+  const tiltY = position.y;
+  const tiltDistance = Math.sqrt(tiltX * tiltX + tiltY * tiltY);
+  const tiltRatio = tiltDistance > 0 ? Math.min(1, tiltDistance / 50) : 0;
+
   return (
     <div className="relative select-none touch-none">
+      {/* Outer RGB LED Track underglow aura - beautifully rotating, soft glow */}
+      <div className="absolute -inset-1.5 rounded-full blur-md opacity-40 overflow-hidden pointer-events-none z-0">
+        <div className="w-full h-full rounded-full rgb-ring-bg animate-rgb-conic" />
+      </div>
+
       <div 
         ref={containerRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-56 h-56 rounded-full bg-gradient-to-br from-[#1E2028] to-[#0A0B0E] p-4 shadow-2xl border border-gray-800 flex items-center justify-center overflow-visible select-none touch-none"
+        className="relative w-56 h-56 rounded-full bg-gradient-to-br from-[#1E2028] to-[#0A0B0E] p-4 shadow-2xl border border-gray-800 flex items-center justify-center overflow-visible select-none touch-none z-10"
       >
-        <div className="w-full h-full rounded-full bg-[#15171E] border-4 border-[#252833] flex items-center justify-center shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none">
+        {/* Dynamic Inner LED Reflex Overlay - reflects direction of joystick push dynamically as a glowing vector backlighting */}
+        <div 
+          className="absolute inset-[3px] rounded-full transition-all duration-75 pointer-events-none z-0" 
+          style={{
+            background: tiltDistance > 0 
+              ? `radial-gradient(circle at calc(50% + ${tiltX * 0.4}px) calc(50% + ${tiltY * 0.4}px), ${activeColor}33 0%, transparent 65%)`
+              : 'transparent',
+            boxShadow: `inset 0 0 ${15 + tiltRatio * 20}px ${activeColor}${isActive ? '3d' : '15'}`,
+          }}
+        />
+
+        {/* Casing edge: Rotating RGB Conic tracking line */}
+        <div className="absolute inset-[2px] rounded-full p-[1px] overflow-hidden pointer-events-none z-0 opacity-80">
+          <div className="w-full h-full rounded-full rgb-ring-bg animate-rgb-conic" />
+        </div>
+
+        <div className="w-full h-full rounded-full bg-[#15171E] border-4 border-[#252833] flex items-center justify-center shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none z-10 relative">
+          
+          {/* Reactive center point crosshair dot */}
+          <div 
+            className="absolute rounded-full w-2 h-2 transition-all duration-300" 
+            style={{ 
+              backgroundColor: activeColor, 
+              boxShadow: `0 0 10px ${activeColor}, 0 0 20px ${activeColor}`,
+              opacity: isActive ? 0.9 : 0.2,
+              transform: `translate(${tiltX * 0.15}px, ${tiltY * 0.15}px)`
+            }} 
+          />
+
           <motion.div
             animate={{ x: position.x, y: position.y }}
             transition={isActive ? { type: 'spring', damping: 30, stiffness: 450 } : { type: 'spring', damping: 20, stiffness: 200 }}
-            className="w-28 h-28 rounded-full bg-[#2A2E3D] border border-gray-700 shadow-xl flex items-center justify-center z-10 cursor-pointer pointer-events-none"
-            style={{ borderColor: isActive ? activeColor : undefined }}
+            className="w-28 h-28 rounded-full bg-gradient-to-b from-[#313646] to-[#1E2028] border-2 shadow-xl flex items-center justify-center z-10 cursor-pointer pointer-events-none"
+            style={{ 
+              borderColor: isActive ? activeColor : '#3f4453',
+              boxShadow: isActive 
+                ? `0 0 25px ${activeColor}bb, inset 0 0 15px ${activeColor}55` 
+                : `0 8px 16px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.1)`,
+            }}
           >
-            <div className="w-20 h-20 rounded-full border-2 flex items-center justify-center pointer-events-none" style={{ borderColor: `${activeColor}1a` }}>
-              <span className="font-mono text-[10px] text-gray-500 font-bold tracking-widest">{label}</span>
+            {/* Soft inner glow ring inside thumbstick cap */}
+            <div 
+              className="w-20 h-20 rounded-full border-2 flex items-center justify-center pointer-events-none transition-all duration-300" 
+              style={{ 
+                borderColor: isActive ? `${activeColor}66` : 'rgba(255,255,255,0.05)',
+                boxShadow: isActive ? `inset 0 0 10px ${activeColor}33` : 'none',
+                background: isActive ? `${activeColor}0f` : 'transparent'
+              }}
+            >
+              <span 
+                className="font-mono text-[10px] uppercase font-black tracking-widest text-[#8F98A8] transition-all"
+                style={{ 
+                  color: isActive ? 'white' : undefined,
+                  textShadow: isActive ? `0 0 8px ${activeColor}` : 'none'
+                }}
+              >
+                {label}
+              </span>
             </div>
           </motion.div>
         </div>
@@ -2066,6 +2166,11 @@ function DPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v:
 
   return (
     <div className="relative w-48 h-48 flex items-center justify-center">
+      {/* Outer RGB LED tracking bloom for the whole D-pad unit */}
+      <div className="absolute -inset-1 rounded-full blur-md opacity-35 overflow-hidden pointer-events-none z-0">
+        <div className="w-full h-full rounded-full rgb-ring-bg animate-rgb-conic" />
+      </div>
+
       {/* Ambient Pulsing Glow Background */}
       <AnimatePresence>
         {isAnyPressed && (
@@ -2090,8 +2195,21 @@ function DPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v:
         )}
       </AnimatePresence>
 
-      <div className="absolute w-14 h-40 bg-[#1A1C23] rounded-md shadow-2xl z-0"></div>
-      <div className="absolute w-40 h-14 bg-[#1A1C23] rounded-md shadow-2xl z-0"></div>
+      {/* Cross Arms - with physical glowing outline and subtle inner shadows */}
+      <div 
+        className="absolute w-14 h-40 bg-[#1A1C23] rounded-[8px] shadow-2xl z-0 border transition-all duration-300"
+        style={{ 
+          borderColor: isAnyPressed ? activeColor : '#2d3244',
+          boxShadow: isAnyPressed ? `0 0 15px ${activeColor}4d` : 'none'
+        }}
+      />
+      <div 
+        className="absolute w-40 h-14 bg-[#1A1C23] rounded-[8px] shadow-2xl z-0 border transition-all duration-300"
+        style={{ 
+          borderColor: isAnyPressed ? activeColor : '#2d3244',
+          boxShadow: isAnyPressed ? `0 0 15px ${activeColor}4d` : 'none'
+        }}
+      />
       
       {directions.map(dir => {
         const isPressed = activeButtons[`dpad_${dir.id}`];
@@ -2103,10 +2221,11 @@ function DPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v:
             onPointerLeave={() => onRelease(`dpad_${dir.id}`)}
             onPointerCancel={() => onRelease(`dpad_${dir.id}`)}
             className={`absolute ${dir.pos} w-10 h-10 flex items-center justify-center transition-all active:scale-95 text-sm z-20 cursor-pointer select-none touch-none
-              ${isPressed ? 'scale-110' : 'text-gray-500 hover:text-gray-400'}`}
+              ${isPressed ? 'scale-110 font-bold' : 'text-gray-400 hover:text-gray-300'}`}
             style={{ 
               color: isPressed ? activeColor : undefined, 
-              textShadow: isPressed ? `0 0 12px ${activeColor}` : 'none'
+              textShadow: isPressed ? `0 0 15px ${activeColor}, 0 0 30px ${activeColor}` : 'none',
+              filter: isPressed ? 'drop-shadow(0 0 6px currentColor)' : 'none'
             }}
           >
             <motion.span
@@ -2125,7 +2244,7 @@ function DPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v:
           scale: isAnyPressed ? 1.15 : 1,
           backgroundColor: isAnyPressed ? `${activeColor}1e` : '#232631',
           borderColor: isAnyPressed ? activeColor : '#374151',
-          boxShadow: isAnyPressed ? `0 0 15px ${activeColor}` : 'none',
+          boxShadow: isAnyPressed ? `0 0 25px ${activeColor}, inset 0 0 10px ${activeColor}40` : 'none',
         }}
         transition={{ type: 'spring', stiffness: 500, damping: 20 }}
         className="z-10 w-12 h-12 flex flex-col items-center justify-center rounded-sm border shadow-inner text-xs font-bold font-mono transition-all duration-150"
@@ -2143,49 +2262,83 @@ function DPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v:
 
 function ActionPad({ onInput, onRelease, activeButtons, activeColor }: { onInput: (v: string) => void, onRelease: (v: string) => void, activeButtons: Record<string, boolean>, activeColor: string }) {
   const buttons = [
-    { id: 'y', label: 'Y', pos: 'top-0 left-1/2 -translate-x-1/2', color: 'text-blue-400' },
-    { id: 'a', label: 'A', pos: 'bottom-0 left-1/2 -translate-x-1/2', color: 'text-green-400' },
-    { id: 'x', label: 'X', pos: 'left-0 top-1/2 -translate-y-1/2', color: 'text-blue-500' },
-    { id: 'b', label: 'B', pos: 'right-0 top-1/2 -translate-y-1/2', color: 'text-red-400' },
+    { id: 'y', label: 'Y', pos: 'top-0 left-1/2 -translate-x-1/2', color: '#60a5fa', activeBg: '#1e3a8a33' }, // Blue
+    { id: 'a', label: 'A', pos: 'bottom-0 left-1/2 -translate-x-1/2', color: '#4ade80', activeBg: '#064e3b33' }, // Green
+    { id: 'x', label: 'X', pos: 'left-0 top-1/2 -translate-y-1/2', color: '#3b82f6', activeBg: '#1e3a8a4d' }, // Indigo/Blue
+    { id: 'b', label: 'B', pos: 'right-0 top-1/2 -translate-y-1/2', color: '#f87171', activeBg: '#7f1d1d4d' }, // Red
   ];
 
   return (
-    <div className="relative w-48 h-48 select-none touch-none">
-       {buttons.map(btn => (
-        <button
-          key={btn.id}
-          onPointerDown={(e) => { e.preventDefault(); onInput(btn.id); }}
-          onPointerUp={() => onRelease(btn.id)}
-          onPointerLeave={() => onRelease(btn.id)}
-          onPointerCancel={() => onRelease(btn.id)}
-          className={`absolute ${btn.pos} w-14 h-14 rounded-full bg-[#1C1E26] border-2 border-gray-700 flex items-center justify-center font-bold text-xl transition-all active:scale-90 shadow-lg select-none touch-none cursor-pointer
-            ${activeButtons[btn.id] ? 'bg-[#252833] brightness-125' : 'brightness-100'} ${btn.color}`}
-          style={{ borderColor: activeButtons[btn.id] ? activeColor : undefined, boxShadow: activeButtons[btn.id] ? `0 0 15px ${activeColor}40` : undefined }}
-        >
-          {btn.label}
-        </button>
-      ))}
+    <div className="relative w-48 h-48 select-none touch-none flex items-center justify-center">
+      {/* Moving dashboard circuit ring backer representing gamer telemetry */}
+      <div 
+        className="absolute w-36 h-36 rounded-full border border-dashed z-0 opacity-40 animate-[spin_20s_linear_infinite]"
+        style={{ 
+          borderColor: `${activeColor}44`,
+          boxShadow: `inset 0 0 25px ${activeColor}15, 0 0 20px ${activeColor}08`
+        }} 
+      />
+
+      {/* Rotating mini dynamic halo for ABXY */}
+      <div className="absolute inset-4 rounded-full blur-md opacity-30 overflow-hidden pointer-events-none z-0">
+        <div className="w-full h-full rounded-full rgb-ring-bg animate-rgb-conic" />
+      </div>
+
+       {buttons.map(btn => {
+         const isPressed = activeButtons[btn.id];
+         return (
+          <button
+            key={btn.id}
+            onPointerDown={(e) => { e.preventDefault(); onInput(btn.id); }}
+            onPointerUp={() => onRelease(btn.id)}
+            onPointerLeave={() => onRelease(btn.id)}
+            onPointerCancel={() => onRelease(btn.id)}
+            className={`absolute ${btn.pos} w-14 h-14 rounded-full bg-[#1C1E26] border-2 flex items-center justify-center font-bold text-xl transition-all active:scale-90 shadow-lg select-none touch-none cursor-pointer z-10`}
+            style={{ 
+              color: btn.color,
+              borderColor: isPressed ? activeColor : `${btn.color}33`, 
+              backgroundColor: isPressed ? btn.activeBg : '#1C1E26',
+              boxShadow: isPressed 
+                ? `0 0 25px ${btn.color}, inset 0 0 12px ${btn.color}aa` 
+                : `0 4px 10px rgba(0,0,0,0.4), 0 0 8px ${btn.color}15`,
+              textShadow: `0 0 10px ${btn.color}cc`
+            }}
+          >
+            {btn.label}
+          </button>
+        );
+       })}
     </div>
   );
 }
 
 function ShoulderButton({ label, id, onPress, onRelease, pressed, isTrigger, activeColor }: { label: string, id: string, onPress: (id: string) => void, onRelease: (id: string) => void, pressed: boolean, isTrigger?: boolean, activeColor?: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 select-none touch-none">
+    <div className="flex flex-col items-center gap-2 select-none touch-none relative">
       <button
         onPointerDown={(e) => { e.preventDefault(); onPress(id); }}
         onPointerUp={() => onRelease(id)}
         onPointerLeave={() => onRelease(id)}
         onPointerCancel={() => onRelease(id)}
-        className={`rounded-t-xl border-t-2 flex items-center justify-center transition-all active:translate-y-1 px-4 select-none touch-none cursor-pointer
+        className={`rounded-t-xl border-t-2 flex items-center justify-center transition-all active:translate-y-1 px-4 select-none touch-none cursor-pointer relative overflow-hidden
           ${isTrigger ? 'w-32 h-12 bg-[#1C1E26]' : 'w-24 h-10 bg-[#252833]'}
-          ${pressed ? 'brightness-150' : 'brightness-100'} shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]`}
+          ${pressed ? 'brightness-125 font-bold' : 'brightness-100'} shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]`}
         style={{ 
            borderColor: pressed ? activeColor : (isTrigger ? `${activeColor}4d` : '#4b5563'),
-           backgroundColor: pressed ? `${activeColor}1a` : undefined
+           backgroundColor: pressed ? `${activeColor}22` : undefined,
+           boxShadow: pressed ? `0 0 22px ${activeColor}66, inset 0 2px 10px rgba(0,0,0,0.3)` : 'none'
          }}
       >
-        <span className="font-mono text-[9px] font-bold tracking-widest uppercase text-gray-400 text-center" style={{ color: pressed ? 'white' : undefined }}>{label}</span>
+        {/* Dynamic sliding color neon bar across top face */}
+        <div 
+          className="absolute top-0 left-0 right-0 h-[3px] transition-all duration-300" 
+          style={{ 
+            backgroundColor: activeColor, 
+            boxShadow: `0 1px 12px ${activeColor}, 0 2px 20px ${activeColor}`
+          }}
+        />
+
+        <span className="font-mono text-[9px] font-bold tracking-widest uppercase text-gray-400 text-center relative z-10" style={{ color: pressed ? 'white' : undefined }}>{label}</span>
       </button>
     </div>
   );

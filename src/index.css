@@ -43,3 +43,29 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+@keyframes rgb-conic {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rgb-conic {
+  animation: rgb-conic 10s linear infinite;
+}
+
+.rgb-ring-bg {
+  background: conic-gradient(
+    from 0deg,
+    #ff0000 0%,
+    #ff00ff 17%,
+    #0000ff 33%,
+    #00ffff 50%,
+    #00ff00 67%,
+    #ffff00 83%,
+    #ff0000 100%
+  );
+}
