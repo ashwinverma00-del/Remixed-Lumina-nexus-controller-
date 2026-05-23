@@ -6,7 +6,7 @@ export interface GameApp {
   genre: string;
 }
 
-export type Platform = 'xcloud' | 'steam' | 'geforce' | 'moonlight' | 'generic';
+export type Platform = 'xcloud' | 'steam' | 'geforce' | 'moonlight' | 'generic' | 'generic_wifi' | 'generic_bluetooth';
 
 export interface JoystickCalibration {
   deadzone: number;
@@ -24,7 +24,12 @@ export interface OptimizationSettings {
   triggerSensitivity: number;
   triggerDeadzone: number;
   rgbColor: string | null;
+  rgbMode?: 'static' | 'rainbow' | 'breathe';
+  rgbSpeed?: number;
   buttonScale: number;
+  gamepadScale?: number;
+  gamepadBorderSize?: number;
+  gamepadBorderStyle?: string;
   calibration: {
     left: JoystickCalibration;
     right: JoystickCalibration;
